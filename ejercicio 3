@@ -1,0 +1,93 @@
+/*
+   Universidad Tecnica Del Norte
+   FICA
+   Nombre:Fabricio Garcia
+
+   Ejercicio 3 = Despues de 20 segundos de  encendido el sistema, prender led 1 por 10 segundos. En 25 segundos de encendido el sistema, prender led 2 por 15 segundos.
+   En 30 segundos de encendido el sistema, prender led 3 por 5 segundos. Repite el ciclo. Se visualiza el contador en una lcd y que led o leds se encuentra encendido.
+*/
+
+//////// Incluímos la libreria ////////
+#include <LiquidCrystal.h> // Librería para el control del LCD
+
+//////// Definimos las constantes ////////
+#define COLS 16 // Columnas para la LCD
+#define ROWS 2 // Filas para la LCD
+
+
+//////// los pins de la interfaz LCD ////////
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2); // varible LCD y pines
+
+//////// Variables de control ////////
+unsigned long tiempo;
+int leds[3] = {8, 9, 10};
+int pin_boton = 7; // Pin para el boton
+boolean activa = false; //Variable de control de encendido
+unsigned long tiempoSegundos = 0;
+
+//////// Inicializar Variables ////////
+void setup() {
+  Serial.begin(9600);
+  for (int i = 0; i < 3; i++) { //Configura salida de leds en pines 2, 3, 4 como salida
+    pinMode(leds[i], OUTPUT);
+  }
+  pinMode(pin_boton, INPUT);
+  tiempo = millis();
+  digitalWrite(pin_boton, HIGH);
+  lcd.begin(COLS, ROWS);  // Configuramos las filas y las columnas del LCD
+  lcd.setCursor(0, 0);
+}
+
+//////// Preparamos el Bucle ////////
+void loop() {
+  //////// Para encender el sistema ////////
+  if (digitalRead(pin_boton) == LOW) { //Revisa que has presioando el boton
+    delay(50);
+    if (digitalRead(pin_boton) == LOW) { // Espera 50 milisegundos para evitar antirrebotes.
+      while (pin_boton == LOW) {} //Espera que sueltes el boton
+      if (activa == true) {
+        activa = false; //Si esta activo se apaga
+      }
+      if (activa == false) {
+        activa = true; // Sie sta apagado se activa
+      }
+    }
+  }
+  //////// LLamamos el metodo ////////
+  if (millis() - tiempo > 0 && millis() - tiempo < 40000) {
+    if (activa == true) { //Si esta activo llama a la fucion encender_leds();
+      encender_leds();
+    }
+  }
+}
+
+//////// Metodo para encender leds ////////
+void encender_leds() {
+  //////// Para lso 10 seg /////
+  if (millis() - tiempo > 20000 && millis() - tiempo < 30000) { //ponemos el rango de encendido
+    digitalWrite(leds[0], HIGH); // led se enciende
+    tiempoSegundos = tiempo * 1000;// guardamos los segundos en una variable
+    lcd.setCursor(0, 0); //Situamos el cursor
+    lcd.println(tiempoSegundos); // imprimimos en la lcd
+  } else if (millis() - tiempo > 30000) { // establecemso el tiempo maximo
+    digitalWrite(leds[0], LOW); // apagamos el led
+  } 
+  //////// Para los 15 Seg ////////
+  if (millis() - tiempo > 25000 && millis() - tiempo < 40000) {//ponemos el rango de encendido
+    digitalWrite(leds[1], HIGH);// led se enciende
+    tiempoSegundos = tiempo * 1000;// guardamos los segundos en una variable
+    lcd.setCursor(7, 0); //Situamos el cursor
+    lcd.println(tiempoSegundos); // imprimimos en la lcd
+  } else if (millis() - tiempo > 40000) {// establecemso el tiempo maximo
+    digitalWrite(leds[1], LOW);// apagamos el led
+  } //Segundo
+
+  if (millis() - tiempo > 30000 && millis() - tiempo < 35000) {
+    digitalWrite(leds[2], HIGH);//led se enciende
+    tiempoSegundos = tiempo * 1000;// guardamos los segundos en una variable
+    lcd.setCursor(0, 1); //Situamos el cursor
+    lcd.println(tiempoSegundos); // imprimimos en la lcd
+  } else if (millis() - tiempo > 35000) {// establecemso el tiempo maximo
+    digitalWrite(leds[2], LOW);// apagamos el led
+  } //tercer
+}
