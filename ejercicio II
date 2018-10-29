@@ -1,0 +1,128 @@
+/*
+ * Universidad Tecnica Del Norte
+ * FICA
+ * Nombre:Fabricio Garcia
+ * 
+ * Ejercicio 2 = Realice una calculadora mediante un teclado matricial y una lcd. 
+ * Las funciones de la calculadora son: suma, resta, multiplicación y división.
+*/
+
+//////// Incluímos la libreria ////////
+#include <LiquidCrystal.h> // Librería para el control del LCD
+#include <Keypad.h> // Librería para el control del keypad
+
+//////// Definimos las constantes ////////
+#define COLS 16 // Columnas para la LCD
+#define ROWS 2 // Filas para la LCD
+#define VELOCIDAD 250 // Velocidad para mover el texto
+
+//////// los pins de la interfaz LCD ////////
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2); // varible LCD y pines
+const byte filas = 4; // número de filas '4' para el keypad
+const byte columnas = 4; // número de columans '4' para el keypad
+
+//////// Configuramos teclado ////////
+char teclado [filas][columnas] = {
+  {'7', '8', '9', '/'},
+  {'4', '5', '6', 'x'},
+  {'1', '2', '3', '-'},
+  {'*', '0', '=', '+'}
+  }; //variables para el teclado
+
+//////// los pins de la interfaz Keypad ////////
+byte filaPines[filas] = {A0, A1, A2, A3}; //configuración de filas
+byte columnaPines[columnas] = {10, 9, 8, 7}; // configuración de columnas
+Keypad calcu = Keypad (makeKeymap(teclado), filaPines, columnaPines, filas, columnas);
+
+//////// Variables de control ////////
+boolean inicio = false;
+boolean final = false; 
+
+//////// Variables ////////
+String num1, num2;
+int ans;
+char op;
+
+//////// Inicializar Variables ////////
+void setup()
+{
+  lcd.begin(COLS, ROWS);  // Configuramos las filas y las columnas del LCD
+  lcd.setCursor(0, 0);  
+  lcd.print("Calculadora"); //Prendido de pantalla
+  delay (VELOCIDAD);  // Esperamos su ejecucion
+  lcd.clear(); // limpiar LCD
+}
+
+void loop(){
+  char key = calcu.getKey();
+  lcd.setCursor(15, 0);
+
+  //////// Digitacion NUM 1 Y NUM 2 ////////
+  if (key != NO_KEY && (key == '1' || key == '2' || key == '3' || key == '4' || key == '5' || key == '6' || key == '7' || key == '8' || key == '9' || key == '0')) { // comparacion de solo numeros
+    if (inicio == false) {
+      num1 = num1 + key; // guardar numero en una cadena
+      int numLength = num1.length(); //para medir el numero digitado
+      lcd.setCursor(15 - numLength, 0); // hacer que el numero aparesca desde el puesto 15 en adelante en fila 0
+      lcd.print(num1); //visualizar numero
+    }
+    else
+    { 
+      num2 = num2 + key;  // guardar numero 2 en una cadena
+      int num2Length = num2.length(); //para medir el numero 2 digitado
+      lcd.setCursor(15 - num2Length, 1); // hacer que el numero aparesca desde el puesto 15 en adelante en la fila 1
+      lcd.print(num2); //visualizar numero
+      final = true; // cambio de estado para resultado
+    }
+  }
+
+  //////// Digitar y Visualizar operadores ////////
+  if (inicio == false && key != NO_KEY && (key == '+' || key == '-' || key == 'x' || key == '/')) {
+    inicio = true; //cambio de estado para la operacion
+    op = key; // guardar operador 
+    lcd.setCursor(15, 0);   // lugar donde imprimir el operador en  la 15,0
+    lcd.print (op); // imprimir el operador
+  }
+
+  //////// Para realizar operaciones ////////
+  if (final == true && key != NO_KEY && key == '=') { // cambio de estado para realizar la operacion 
+    if (op == '+') // para la suma 
+    {
+      ans = num1.toInt() + num2.toInt(); // realizar operaciom y guardar variable 
+    }
+    if (op == '-')  // para la resta
+    {
+      ans = num1.toInt() - num2.toInt(); // realizar operaciom y guardar variable 
+    }
+    if (op == 'x') // para la multiplicacion
+    {
+      ans = num1.toInt() * num2.toInt(); // realizar operaciom y guardar variable 
+    }
+    if (op == '/') // para la division
+    {
+      ans = num1.toInt() / num2.toInt();  // realizar operaciom y guardar variable 
+    }
+
+    lcd.clear(); // limpiar LCD
+    lcd.setCursor(15, 0);//punto donde se vera la respuesta
+    lcd.autoscroll(); //mueve todo el texto un espacio a la izquierda cada vez que se agrega una letra
+    lcd.print(ans); // imprimir respuesta
+    lcd.noAutoscroll(); // desactiva el movimiento
+    num1 = " "; // reinicia variable
+    num2 = " "; // reinicia variable
+    ans = 0; // reinicia variable
+    op = ' '; // reinicia variable
+    inicio = false;  // vuelve a estado original
+    final = false;  // vuelve a estado original
+  }
+
+  //////// Apagado " Borrado de pamtalla total" ////////
+  if (key != NO_KEY && key == '*') { // compara variable para simular apagado
+    lcd.clear(); // limía LCD
+    num1 = " "; // reinicia variable
+    num2 = " "; // reinicia variable
+    ans = 0; // reinicia variable
+    op = ' '; // reinicia variable
+    inicio = false;  // vuelve a estado original
+    final = false;  // vuelve a estado original
+  }
+}
