@@ -1,0 +1,59 @@
+//# Optativa-II
+/*
+     Universidad Tecnica Del Norte
+     FICA
+     Nombre:Fabricio Garcia
+
+     Ejercicio 1 = Realizar un sistema que ingrese por comunicación serial una palabra y se visualice en una LCD. Además, realice un rotación de letras dentro la LCD.
+*/
+
+//////// Incluímos la libreria ////////
+#include <LiquidCrystal.h> // Incluimos la libreria para la LCD
+
+//////// Definimos las constantes ////////
+#define COLS 16 // Columnas para la LCD
+#define ROWS 2 // Filas para la LCD
+#define VELOCIDAD 250 // Velocidad para mover el texto
+
+//////// los pins de la interfaz ////////
+LiquidCrystal lcd( 9, 8, 7, 6, 5, 4 ); // Ingresamos los pines del arduino para la LCD
+
+//////// Variables ////////
+String texto_fila ; // creamos una variable cadena para guardar el textotexto
+
+//////// Inicializar Variables ////////
+void setup() {
+  Serial.begin(9600);  // Establecemos la comunicacion serial
+  lcd.begin(COLS, ROWS); // Configuramos las filas y las columnas del LCD
+  lcd.setCursor(0, 0);
+}
+
+//////// Preparamos el Bucle ////////
+void loop() {
+
+  //////// Para ingresar la palabra por medio  del serial ////////
+  if (Serial.available() > 0) {
+    texto_fila = Serial.readString();
+    Serial.println("Su palabra ingresada fue"); // Imprimimos un texto en el Serial
+    Serial.print(texto_fila); // Imprimimos la palabra ingresada en el Serial
+    int tam_texto = texto_fila.length(); // Obtenemos el tamaño del texto ingresado
+
+
+    //////// Mostramos entrada texto por la izquierda ////////
+    for (int i = tam_texto; i > 0 ; i--) {
+      String texto = texto_fila.substring(i - 1); // Nos devuelva una parte del texto creamos una cadena en otra cadena
+      lcd.clear(); // Limpiamos pantalla
+      lcd.setCursor(0, 0); //Situamos el cursor
+      lcd.print(texto);// Imprimimos el texto
+      delay(VELOCIDAD);// Esperamos su ejecucion
+    }
+
+    // Desplazamos el texto hacia la derecha
+    for (int i = 1; i <= 16; i++) { //
+      lcd.clear();  // Limpiamos pantalla
+      lcd.setCursor(i, 0);  //Situamos el cursor
+      lcd.print(texto_fila);  // Escribimos el texto
+      delay(VELOCIDAD); // Esperamos
+    }
+  }
+}
