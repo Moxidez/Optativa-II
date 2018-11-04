@@ -1,0 +1,290 @@
+/*
+   Universdiad Tecnica Del Norte
+   FICA-CIERCOM
+   Nomber: FAbricio Garcia
+
+   Ejercicio Propuesto
+     Dada la matriz ejecutar los respectivos literales
+     Promedio de cada fila
+     Promedio de cada columna
+     Número más alto de cada fila
+     Número más bajo de cada columna
+     Número más alto de toda la matriz
+     Número más bajo de toda la matriz
+*/
+
+//////// Matriz Propuesta ////////
+int matriz [10][4] = { {3, 5, -6, 7},
+  {3, 8, 6, 17},
+  {2, -4, 4, 27},
+  {2, 4, 8, 10},
+  {2, 4, -2, 5},
+  {4, 5, 6, 7},
+  {5, -8, 6, -7},
+  {1, 5, 16, 8},
+  {0, 5, 12, 7},
+  {4, 5, 16, 7}
+};  // Declaramos la Matriz y ponemos los datos propuestos
+//////// Matrices auxiliares como la original  ////////
+int matriz_2 [10][4];
+int matriz_3 [10][4];
+int matriz_4 [10][4];
+//////// Variables control ////////
+int i; // variable para recorrer la matriz
+int j; // variable para recorrer la matriz
+int x; // varaible para el methodo burbuja
+int y; // variable para el methodo burbuja
+int suma = 0; // variable para suma usado en fila
+int suma_2 = 0; // variable para suma usado en columna
+float pf = 0; // variable para promedio con decimales
+float pc = 0; // variable para promedio con decimales
+int mayor = 0;  // variable auxiliar
+char dat; // variable para interactuar con las opciones
+
+//////// Inicializar Comunicacion e interfaz ////////
+void setup() {
+  Serial.begin(9600);// abre el puerto serial y le asigna la velocidad de 9600 bps
+  // visualizador del menu en el terminal serial
+  Serial.println("Menu");
+  Serial.println("Ver Matriz opcion a");
+  Serial.println("Promedio de cada fila opcion b");
+  Serial.println("Promedio de cada columna opcion c");
+  Serial.println("Numero mas alto de cada fila opcion d");
+  Serial.println("Numero mas bajo de cada columna opcion e");
+  Serial.println("Numero mas alto de toda la matriz opcion f");
+  Serial.println("Numero mas bajo de toda la matriz opcion g");
+  Serial.println("Opcion h para salir");
+  Serial.println("Solo estas opciones sirven vualquier otra tecla digitada no funcionara");
+  Serial.println("Digite la opcion");
+}
+
+//////// Preparamos el Bucle ////////
+void loop() {
+  retornar();
+  if (Serial.available() > 0) { // lee el puerto de serie
+    dat = Serial.read(); // se guarda la variable digitada
+    Serial.println(" "); // generar espacio
+    switch (dat) { // el dato se compara con los casos
+      case 'a':                       // la opcion a para los casos
+        Serial.println("Opcion a");   // se imprime la opcion digitada
+        ver();                       // se llama al methodo
+        Serial.println("Digite otra opcion o h para acabar");
+        break;                        // se cierra el methodo
+      case 'b':                       // Pasa lo mismo en todos los casos
+        Serial.println("Opcion b");
+        p_fila();
+        Serial.println("Digite otra opcion o h para acabar");
+        break;
+      case 'c':                       // Pasa lo mismo en todos los casos
+        Serial.println("Opcion c");
+        p_columna();
+        Serial.println("Digite otra opcion o h para acabar");
+        break;
+      case 'd':                       // Pasa lo mismo en todos los casos
+        Serial.println("Opcion d");
+        mayor_fila();
+        Serial.println("Digite otra opcion o h para acabar");
+        break;
+      case 'e':                       // Pasa lo mismo en todos los casos
+        Serial.println("Opcion e");
+        bajo_c();
+        Serial.println("Digite otra opcion o h para acabar");
+        break;
+      case 'f':                       // Pasa lo mismo en todos los casos
+        Serial.println("Opcion f");
+        mayor_todo();
+        Serial.println("Digite otra opcion o h para acabar");
+        break;
+      case 'g':                       // Pasa lo mismo en todos los casos
+        Serial.println("Opcion g");
+        menor_todo();
+        Serial.println("Digite otra opcion o h para acabar");
+        break;
+      case 'h':                       // Pasa lo mismo en todos los casos
+        Serial.println("Adios");
+        Serial.end();                 // se termina la comunicacion serial
+        break;
+      case 'i':                       // Pasa lo mismo en todos los casos
+        break;
+    }
+  }
+}
+
+//////// Metodo para ver la Matriz ////////
+void ver() {  // Se nombra al methodo
+  for ( i = 0; i <= 9; i++) {   // opcion para recorrer las filas
+    for (  j = 0; j <= 3; j++) {  //opcion para que recorran las columnas
+      Serial.print("Esta en la posicion: ");; Serial.print(i); Serial.print(" "); Serial.print(j); Serial.print(" = ");
+      Serial.println(matriz[i][j]);   // imprimimos la matriz
+      Serial.println(" ");    // creamos espacio
+      delay(250);    //damos un tiempo de espera
+    }
+  }
+}
+
+//////// Metodo para promedio por filas ////////
+void p_fila() {
+  for (int i = 0; i <= 9; i++) {  //para recorrer las filas
+    for ( int j = 0 ; j <= 3; j++) {  // para recorrer las columnas
+      suma += matriz[i][j];   // se cuarda en una variable el numero de la matriz
+      pf = suma / 4.0;  // la suma se le divide para el numero de datos
+    }
+    Serial.println("Promedio"); Serial.print(i); Serial.print(" = ");
+    Serial.println(pf);     // se imprimer la variable del promedio
+    Serial.println(" ");
+    delay(200);   // tiempo de espera
+    suma = 0;   // se reinicia la variable para la suma
+  }
+}
+
+//////// Metodo para promedio columnas ////////
+void p_columna() {
+  for (i = 0; i <= 3; i++) {  // para recorrer las columnas
+    for ( j = 0; j <= 9; j++) {   // para recorrer las filas
+      suma_2 +=  matriz[j][i]; // se guarda en la variable
+      pc = suma_2 / 10.0;   // la suma total se divide para el numero de datos
+    }
+    Serial.println("Promedio"); Serial.print(i); Serial.print(" = ");
+    Serial.println(pc);   // se imprime la variable
+    Serial.println(" ");
+    delay(200);   // tiempo de espera
+    suma_2 = 0;      // se reinicia la suma
+  }
+}
+
+//////// Metodo para Menor de toda la Matriz ////////
+void menor_todo() {
+  /*
+     Aqui en este methodo usamos el ordenamiento por medio de la "BURBUJA"
+     ya que es facil de implementar en esta opcion
+  */
+  for ( i = 0; i <= 9; i++) {   // leer las filas
+    for (  j = 0; j <= 3; j++) {  //leer las columnas
+      for ( x = 0; x < 10; x++) {   // usamos para crear un for anidado y un bucle
+        for ( y = 0; y < 4; y++) {    // usamos para crear un for anidado y un bucle
+          if (matriz_2[i][j] > matriz_2[x][y]) { // si numero actual es mayor a numero siguiente
+            mayor = matriz_2[i][j];     // auxiliar es igual a numero actual
+            matriz_2[i][j] = matriz_2[x][y];    // numero actual va a ser iguala numero siguiente
+            matriz_2[x][y] = mayor;   // numero siguiente va a ser iguala  auxiliar
+          }
+        }
+      }
+    }
+  }
+  /*
+     Como ya sabemos que se ordena de mayor a menor
+     solo imprimimos la posicion  final porque hay es donde
+     se encuentra el menor numero de toda la matriz
+  */
+  Serial.print("El menor es:"); Serial.print(" = ");
+  Serial.println(matriz_2[9][3]);
+  Serial.println(" ");
+  delay(750);
+}
+
+//////// Metodo para el mayos toda la Matriz ////////
+void mayor_todo() {
+  /*
+    Aqui en este methodo usamos el ordenamiento por medio de la "BURBUJA"
+    ya que es facil de implementar en esta opcion
+    se repite el proceso que el anterior methodo pero solo
+    imprimimos ottra posicion
+  */
+  for ( i = 0; i <= 9; i++) {   // leer las filas
+    for (  j = 0; j <= 3; j++) {    //leer las columnas
+      for ( x = 0; x <= 9; x++) {   // usamos para crear un for anidado y un bucle
+        for ( y = 0; y <= 3; y++) {   // usamos para crear un for anidado y un bucle
+          if (matriz_2[i][j] > matriz_2[x][y]) {    // si numero actual es mayor a numero siguiente
+            mayor = matriz_2[i][j];   // auxiliar es igual a numero actual
+            matriz_2[i][j] = matriz_2[x][y];    // numero actual va a ser iguala numero siguiente
+            matriz_2[x][y] = mayor;   // numero siguiente va a ser iguala  auxiliar
+          }
+        }
+      }
+    }
+  }
+  /*
+    Como ya sabemos que se ordena de mayor a menor
+    solo imprimimos la posicion  final porque hay es donde
+    se encuentra el mayor numero de toda la matriz
+  */
+  Serial.print("El mayor es:"); Serial.print(" = ");
+  Serial.println(matriz_2[0][0]);
+  Serial.println(" ");
+  delay(750);
+}
+
+//////// Metodo para mayor por fila ////////
+void mayor_fila() {
+  /*
+    Aqui en este methodo usamos el ordenamiento por medio de la "BURBUJA"
+    ya que es facil de implementar en esta opcion
+    se repite el proceso del anterior methodo pero solo
+    para que se ordene por fila
+  */
+  for ( i = 0; i <= 9; i++) {   // leer las filas
+    for (  j = 0; j <= 3; j++) {    //leer las columnas
+      for ( y = 0; y <= 3; y++) {   // usamos para crear un for anidado y un bucle
+        if (matriz_3[i][j] > matriz_3[i][y]) {     // si numero actual es mayor a numero siguiente
+          mayor = matriz_3[i][j];    // auxiliar es igual a numero actual
+          matriz_3[i][j] = matriz_3[i][y];    // numero actual va a ser iguala numero siguiente
+          matriz_3[i][y] = mayor;   // numero siguiente va a ser iguala  auxiliar
+        }
+      }
+    }
+  }
+  /*
+    Como ya sabemos que se ordena de mayor a menor
+    solo imprimimos la posicion  final porque hay es donde
+    se encuentra el mayor numero de toda la fila
+  */
+  for ( i = 0; i <= 9; i++) {
+    Serial.print("Mayor de la fila ");; Serial.print(i); Serial.print(" = ");
+    Serial.println(matriz_3[i][0]);
+    Serial.println(" ");
+    delay(750);
+  }
+}
+
+//////// Metodo para menor por columna ////////
+void bajo_c() {
+  /*
+    Aqui en este methodo usamos el ordenamiento por medio de la "BURBUJA"
+    ya que es facil de implementar en esta opcion
+    se repite el proceso del anterior methodo pero solo
+    para que se ordene por columna
+  */
+  for (i = 0; i <= 3; i++) {    // leer las columnas
+    for ( j = 0; j <= 9; j++) {   // leer las filas
+      for ( y = 0; y <= 9; y++) {     // usamos para crear un for anidado y un bucle
+        if (matriz_4[j][i] > matriz_4[y][i]) {     // si numero actual es mayor a numero siguiente
+          mayor = matriz_4[j][i];    // auxiliar es igual a numero actual
+          matriz_4[j][i] = matriz_4[y][i];    // numero actual va a ser iguala numero siguiente
+          matriz_4[y][i] = mayor;   // numero siguiente va a ser iguala  auxiliar
+        }
+      }
+    }
+  }
+  /*
+    Como ya sabemos que se ordena de mayor a menor
+    solo imprimimos la posicion  final porque hay es donde
+    se encuentra el menor numero de toda la columna
+  */
+  for ( j = 0; j <= 3; j++) {
+    Serial.print("Bajo de la columna ");; Serial.print(j); Serial.print(" = ");
+    Serial.println(matriz_4[9][j]);
+    Serial.println(" ");
+    delay(750);
+  }
+}
+
+//////// Copiar matrices ////////
+void retornar() {
+  for ( i = 0; i <= 9; i++) {   // opcion para recorrer las filas
+    for (  j = 0; j <= 3; j++) {  //opcion para que recorran las columnas
+      matriz_2[i][j] = matriz [i][j];   //copiar en matrix auxiliar
+      matriz_3[i][j] = matriz [i][j];   //copiar en matrix auxiliar
+      matriz_4[i][j] = matriz [i][j];   //copiar en matrix auxiliar
+    }
+  }
+}
