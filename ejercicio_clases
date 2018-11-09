@@ -1,0 +1,64 @@
+/*
+   Universdiad Tecnica Del Norte
+   FICA-CIERCOM
+   Nomber: FAbricio Garcia
+
+   Ejercicio Propuesto
+*/
+// matriz propuestas ya antes creadas
+#include"datos_entrenamiento.h"
+#include"datos_test.h"
+// variables de control
+int i; // variable para la matris filas
+int j; // variable para la matriz columna
+int k; // variable para el usuario
+float distancia; // variable para el calculo de la distancia
+float dist_menor = 1000 ; // variable para la distancia menor
+int cont; // variable para contador
+int suma1 = 0; // variable para el grupo 1
+int suma2 = 0; // variable para el grupo 2
+int suma3 = 0;// variable para el grupo 3
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600); // inicio de comunicacion serial
+}
+// preparando el bucle//
+void loop() {
+  // put your main code here, to run repeatedly:
+  if (Serial.available() > 0) { // vemos si hay datos mandados por el serial
+    k = Serial.read(); // leemos el dato recibido y le guardamos en una variable
+    for (i = 0 ; i < 120; i++) { // para recorrer la matris por filas
+      distancia = sqrt(pow(matriz[i][0] - prueba[9][0], 2) + // hacemos el calculo de la distancia con la matriz de prueba
+                       pow(matriz[i][1] - prueba[9][1], 2) + // calculo de la distancia
+                       pow(matriz[i][2] - prueba[9][2], 2) + // calculo de la distancia
+                       pow(matriz[i][3] - prueba[9][3], 2)); // calculo de la distancia
+
+      if (cont = k) { // comparacion de la variable ingresada
+        if (distancia < dist_menor) { // comparacion de las distancias
+          dist_menor = distancia; // compara distancias
+          if (matriz [i] [4] == 1) { // posicion en igual a 1
+            suma1 ++; // auxiliar de sumas
+          }
+          else if (matriz [i] [4] == 2) { // posicion igual a 2
+            suma2 ++; // auxiliar de sumas
+          }
+          else if (matriz [i] [4] == 3) { // posicion es igual a 3
+            suma3 ++; // auxiliar de sumas
+          }
+        }
+        // comparacion a que grupo pertenece
+        if ((suma1 > suma2) && (suma1 > suma2)) { // si pertenece al grupo 1
+          Serial.print ("En el grupo 1:"); Serial.println (suma1);
+        }
+        else if ((suma2 > suma1) && (suma2 > suma3)) { // si pertenece al grupo 2
+          Serial.print ("En el grupo 2:"); Serial.println (suma2);
+        }
+        else if ((suma3 > suma1) && (suma3 > suma2)) { // si pertenece al grupo 3
+          Serial.print ("En el grupo 3:"); Serial.println (suma3);
+        }
+        cont ++;
+      }
+    }
+  }
+}
+
