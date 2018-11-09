@@ -1,0 +1,96 @@
+/*
+   Universdiad Tecnica Del Norte
+   FICA-CIERCOM
+   Nomber: FAbricio Garcia
+
+   Ejercicio Propuesto
+*/
+
+//////// Matriz Propuesta ////////
+#include"datos_entrenamiento.h"
+#include"datos_test.h"
+//////// Variables control ////////
+int col = 0;// variable para recorrer la matriz
+int row = 0;// variable para recorrer la matriz
+int suma1 = 0;// suma auxiliar
+int suma2 = 0;// suma auxiliar
+int suma3 = 0;// suma auxiliar
+float distancia_1; // raiz auxiliar
+float distancia_2; // raiz auxiliar
+float distancia_3;// raiz auxiliar
+float dist_menor1 = 1000; // dato menor auxiliar
+float dist_menor2 = 1000; // dato menor auxiliar
+float dist_menor3 = 1000; // dato menor auxiliar
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+}
+
+void loop() {
+
+  for (; row < 120; row++) { // contador de filas (for lento)
+    // raiz cuadrada para la distancia
+    distancia_1 = sqrt( pow((matriz[row][0] - prueba[16][0]), 2) +
+                        pow((matriz[row][1] - prueba[16][1]), 2) +
+                        pow((matriz[row][2] - prueba[16][2]), 2) +
+                        pow((matriz[row][3] - prueba[16][3]), 2));
+    // raiz cuadrada para la distancia
+    distancia_2 = sqrt( pow((matriz[row][0] - prueba[6][0]), 2) +
+                        pow((matriz[row][1] - prueba[6][1]), 2) +
+                        pow((matriz[row][2] - prueba[6][2]), 2) +
+                        pow((matriz[row][3] - prueba[6][3]), 2));
+    // raiz cuadrada para la distancia
+    distancia_3 = sqrt( pow((matriz[row][0] - prueba[27][0]), 2) +
+                        pow((matriz[row][1] - prueba[27][1]), 2) +
+                        pow((matriz[row][2] - prueba[27][2]), 2) +
+                        pow((matriz[row][3] - prueba[27][3]), 2));
+    // comparador de distancias
+    if (distancia_1 < dist_menor1) {
+      dist_menor1 = distancia_1;
+      if (matriz[row][4] == 1) {
+        suma1++; // auxiliar de sumas
+      }
+      else if (matriz[row][4] == 2) {
+        suma2++;// auxiliar de sumas
+      }
+      else if (matriz[row][4] == 3) {
+        suma3++;// auxiliar de sumas
+      }
+    }
+    if (distancia_2 < dist_menor2) {
+      dist_menor2 = distancia_2;
+      if (matriz[row][4] == 1) {
+        suma1++;// auxiliar de sumas
+      }
+      else if (matriz[row][4] == 2) {
+        suma2++;// auxiliar de sumas
+      }
+      else if (matriz[row][4] == 3) {
+        suma3++;// auxiliar de sumas
+      }
+    }
+    if (distancia_3 < dist_menor3) {
+      dist_menor3 = distancia_3;
+      if (matriz[row][4] == 1) {
+        suma1++;// auxiliar de sumas
+      }
+      else if (matriz[row][4] == 2) {
+        suma2++;// auxiliar de sumas
+      }
+      else if (matriz[row][4] == 3) {
+        suma3++;// auxiliar de sumas
+      }
+    }
+    // comparacion a que grupo eprtenece
+    if ((suma1 > suma2) && (suma1 > suma2)) {
+      Serial.print("En el grupo 1: "); Serial.println(suma1);
+    }
+    else if ((suma2 > suma1) && (suma2 > suma3)) {
+      Serial.print("En el grupo 2: "); Serial.println(suma2);
+    }
+    else if ((suma3 > suma1) && (suma3 > suma2)) {
+      Serial.print("En el grupo 3: "); Serial.println(suma3);
+    }
+  }
+}
+
