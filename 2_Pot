@@ -1,0 +1,75 @@
+import controlP5.*;
+import processing.serial.*;
+
+Serial port;
+String dato, dato_1;
+int inicio=250;
+int valor;
+String in;
+
+ControlP5 cp5; //consultor para llamar la libreria, se contruye slaiders botones etc
+
+int i=0;
+int cont=0;
+
+
+
+void setup() {
+  size(800, 500);
+  background(0);
+  port = new Serial (this, "COM7", 9600);
+  port.bufferUntil('\n');
+  /////////////////////////////////////////
+  cp5 = new ControlP5(this);
+  cp5.addButton("conectar") //crear boton
+    .setPosition(50, 50) //elegi posicion
+    .setSize(90, 50)//elegir tama;o
+    .setCaptionLabel("OFF");  //cambiar nombre del boton
+  cp5.addSlider("Dato") //barra vertical. AQUI SE DA NOMBRE A LA BARRA QUE DEBE SER DIFERENTES A LAS DEMAS
+    .setPosition(50, 150)
+    .setSize(50, 250)
+    .setRange(0, 255)
+    .setValue(0);
+}
+
+void draw() {
+  //background(0);
+  if (port.available()>0) {
+    dato=port.readString();
+    valor=int(dato)/4;
+    cp5.getController("Dato").setValue(valor);
+    println(dato);
+  }
+  fill(255);
+  rect(250, 150, 400, 250);
+  stroke(0);
+  line(250, 150, 650, 150);
+  line(250, 200, 650, 200);
+  line(250, 250, 650, 250);
+  line(250, 300, 650, 300); 
+  line(250, 350, 650, 350);
+  if (inicio>249 && inicio<650) {
+    line(inicio=inicio+2, 390, inicio=inicio+2, 390-valor);
+  } else
+  {
+    inicio=250; 
+  }
+}
+
+public void conectar() { //la funcion se conecta a la parte de cear el boton
+  // println("ON");
+  i=1-i;
+  if (i==1) {
+    println("ON");
+    cp5.getController("Dato").setValue(0);
+    cp5.getController("conectar").setCaptionLabel("ON");
+    cp5.getController("conectar").setColorBackground(color(0, 255, 0));
+    println("ON");
+  } else {
+    port.stop();
+    cp5.getController("conectar").setCaptionLabel("OFF");
+    cp5.getController("conectar").setColorBackground(color(255, 0, 0));
+    println("OFF");
+    background(0);
+  }
+}
